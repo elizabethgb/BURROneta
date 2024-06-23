@@ -26,9 +26,29 @@ const MatchDetailsDialog = (props) => {
         {label: "Items", column: <Column key="items" style={{minWidth: "260px"}} body={(rowData) => buildItems(rowData)}/>},
         {label: "Duration", column: <Column key="gameDuration" field="gameDuration" header="Duration" body={(rowData) => formatTime(rowData.gameDuration)} sortable/>},
         {label: "Result", column: <Column key="result" field="result" header="Result" body={(rowData) => <Tag severity={rowData.win ? "success" : "danger"} value={rowData.result}/>} sortable/>},
+        {label: "Side", column: <Column key="side" field="side" header="Side" body={(rowData) => <Tag severity={rowData.side === "Blue" ? "info" : "danger"} value={rowData.side}/>} sortable/>},
         {label: "Date", column: <Column key="gameStartTimestamp" field="gameStartTimestamp" header="Date" body={(rowData) => formatDate(rowData.gameStartTimestamp)} sortable/>}
     ]);
-    const [hiddenColumns, setHiddenColumns] = useState([]);
+    const [hiddenColumns, setHiddenColumns] = useState([
+        {label: "Party", column: <Column key="party" field="party" header="Party" sortable/>},
+        {label: "Queue", column: <Column key="queue" field="queue" header="Queue" sortable/>},
+        {label: "Physical Dmg Dealt", column: <Column key="physicalDamageDealtToChampions" field="physicalDamageDealtToChampions" header="Physical Dmg Dealt" body={(rowData) => props.formatNumber(rowData.physicalDamageDealtToChampions, false, true)} sortable/>},
+        {label: "Magic Dmg Dealt", column: <Column key="magicDamageDealtToChampions" field="magicDamageDealtToChampions" header="Magic Dmg Dealt" body={(rowData) => props.formatNumber(rowData.magicDamageDealtToChampions, false, true)} sortable/>},
+        {label: "True Dmg Dealt", column: <Column key="trueDamageDealtToChampions" field="trueDamageDealtToChampions" header="Physical Dmg Dealt" body={(rowData) => props.formatNumber(rowData.trueDamageDealtToChampions, false, true)} sortable/>},
+        {label: "Self Mitigated Dmg", column: <Column key="damageSelfMitigated" field="damageSelfMitigated" header="Self Mitigated Dmg" body={(rowData) => props.formatNumber(rowData.damageSelfMitigated, false, true)} sortable/>},
+        {label: "VS", column: <Column key="visionScore" field="visionScore" header="Vision Score" sortable/>},
+        {label: "Wards Placed", column: <Column key="wardsPlaced" field="wardsPlaced" header="Wards Placed" sortable/>},
+        {label: "Control Wards Placed", column: <Column key="controlWardsPlaced" field="controlWardsPlaced" header="Control Wards Placed" sortable/>},
+        {label: "Wards Killed", column: <Column key="wardsKilled" field="wardsKilled" header="Wards Killed" sortable/>},
+        {label: "Dragons Killed", column: <Column key="team_dragonKills" field="team_dragonKills" header="Dragons Killed" sortable/>},
+        {label: "Barons Killed", column: <Column key="team_baronKills" field="team_baronKills" header="Barons Killed" sortable/>},
+        {label: "Turrets Killed", column: <Column key="team_turretKills" field="team_turretKills" header="Turrets Killed" sortable/>},
+        {label: "Skillshots Dodged", column: <Column key="skillshotsDodged" field="skillshotsDodged" header="Skillshots Dodged" sortable/>},
+        {label: "Skillshots Hit", column: <Column key="skillshotsHit" field="skillshotsHit" header="Skillshots Hit" sortable/>},
+        {label: "Solo Kills", column: <Column key="soloKills" field="soloKills" header="Solo Kills" sortable/>},
+        {label: "CS@10", column: <Column key="cs" field="cs" header="CS@10" body={(rowData) => Math.round(rowData.laneMinionsFirst10Minutes + rowData.jungleCsBefore10Minutes)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.laneMinionsFirst10Minutes+a.jungleCsBefore10Minutes) - (b.laneMinionsFirst10Minutes+b.jungleCsBefore10Minutes)) * order))}/>},
+    ]);
+
 
     const summonersList = {
       "1": {"id": "SummonerBoost", "name": "Cleanse", "key": "1"},
@@ -89,7 +109,7 @@ const MatchDetailsDialog = (props) => {
     const getHeader = () => {
         return <div>
             <Button className='p-0 mr-2' onClick={() => setColumnsDialogVisible(true)} tooltip="Config" tooltipOptions={{ position: 'bottom', mouseTrack: true, style: {width: "71px"} }}>
-                <i className="pi pi-cog" style={{ fontSize: '0.8rem', padding: '0.2rem' }}/>
+                <i className="pi pi-cog" style={{ fontSize: '0.8rem', padding: '0.2rem', marginTop: '0.1rem' }}/>
             </Button>
             {props.header}
         </div>

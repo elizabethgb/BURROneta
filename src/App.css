@@ -13,3 +13,12 @@
   padding:1px;
   font-size:10px;
 }
+
+.p-picklist-source-controls{
+  padding-left: 0px;
+}
+
+.p-picklist-list{
+  min-height: 65vh;
+  max-height: 65vh;
+}

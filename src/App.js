@@ -35,13 +35,37 @@ function App() {
     {label: "Assists", column: <Column key="assists" field="assists" header="Assists" body={(rowData) => total_team(rowData.assists, rowData.team_assists)} sortable/>},
     {label: "KDA", column: <Column key="kda" field="kda" header="KDA" body={(rowData) => formatNumber((rowData.kills+rowData.assists)/(rowData.deaths?rowData.deaths:1))} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.deaths===0 ? a.kills+a.assists : (a.kills+a.assists)/a.deaths) - (b.deaths===0 ? b.kills+b.assists : (b.kills+b.assists)/b.deaths)) * order) /*otra opción: (param) => param.data.sort((a, b)=>{})*/)}/>},
     {label: "KP", column: <Column key="kp" field="kp" header="KP" body={(rowData) => formatNumber((rowData.kills+rowData.assists)/(rowData.team_kills?rowData.team_kills:1), true)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.team_kills===0 ? a.kills+a.assists : (a.kills+a.assists)/a.team_kills) - (b.team_kills===0 ? b.kills+b.assists : (b.kills+b.assists)/b.team_kills)) * order))}/>},
-    {label: "Damage", column: <Column key="totalDamageDealtToChampions" field="totalDamageDealtToChampions" header="Damage" body={(rowData) => total_team(rowData.totalDamageDealtToChampions, rowData.team_totalDamageDealtToChampions, true)} sortable/>},
+    {label: "Damage/min", column: <Column key="totalDamageDealtToChampions" field="totalDamageDealtToChampions_min" header="Damage/min" body={(rowData) => total_team(rowData.totalDamageDealtToChampions*60/rowData.gameDuration, rowData.team_totalDamageDealtToChampions*60/rowData.gameDuration, true)} sortable sortFunction={({data, order}) => data.sort((a,b) => (a.totalDamageDealtToChampions/a.gameDuration-b.totalDamageDealtToChampions/b.gameDuration)*order)}/>},
+    {label: "Gold/min", column: <Column key="goldEarned" field="goldEarned_min" header="Gold/min" body={(rowData) => total_team(rowData.goldEarned*60/rowData.gameDuration, rowData.team_goldEarned*60/rowData.gameDuration, true)} sortable sortFunction={({data, order}) => data.sort((a,b) => (a.goldEarned/a.gameDuration-b.goldEarned/b.gameDuration)*order)}/>},
+    {label: "CS/min", column: <Column key="cs_min" field="cs_min" header="CS/min" body={(rowData) => formatNumber((rowData.totalMinionsKilled+rowData.neutralMinionsKilled)*60/rowData.gameDuration)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.totalMinionsKilled+a.neutralMinionsKilled)/a.gameDuration - (b.totalMinionsKilled+b.neutralMinionsKilled)/b.gameDuration) * order))}/>},
+    {label: "VS/min", column: <Column key="visionScore_min" field="visionScore_min" header="VS/min" body={(rowData) => formatNumber(rowData.visionScore*60/rowData.gameDuration)} sortable sortFunction={({data, order}) => data.sort((a,b) => (a.visionScore/a.gameDuration-b.visionScore/b.gameDuration)*order)}/>},
+    {label: "Winrate", column: <Column key="win" field="win" header="Winrate" body={(rowData) => formatNumber(rowData.win, true)} sortable/>}
+  ]);
+  const [hiddenColumns, setHiddenColumns] = useState([
+    {label: "Total Damage", column: <Column key="totalDamageDealtToChampions" field="totalDamageDealtToChampions" header="Total Damage" body={(rowData) => total_team(rowData.totalDamageDealtToChampions, rowData.team_totalDamageDealtToChampions, true)} sortable/>},
+    {label: "Damage Taken", column: <Column key="totalDamageTaken" field="totalDamageTaken" header="Damage Taken" body={(rowData) => total_team(rowData.totalDamageTaken, rowData.team_totalDamageTaken, true)} sortable/>},
+    {label: "Physical Damage", column: <Column key="physicalDamageDealtToChampions" field="physicalDamageDealtToChampions" header="Physical Damage" body={(rowData) => formatNumber(rowData.physicalDamageDealtToChampions)} sortable/>},
+    {label: "Magic Damage", column: <Column key="magicDamageDealtToChampions" field="magicDamageDealtToChampions" header="Magic Damage" body={(rowData) => formatNumber(rowData.magicDamageDealtToChampions)} sortable/>},
+    {label: "True Damage", column: <Column key="trueDamageDealtToChampions" field="trueDamageDealtToChampions" header="True Damage" body={(rowData) => formatNumber(rowData.trueDamageDealtToChampions)} sortable/>},
+    {label: "Self Mitigated Damage", column: <Column key="damageSelfMitigated" field="damageSelfMitigated" header="True Damage" body={(rowData) => formatNumber(rowData.damageSelfMitigated)} sortable/>},
+    {label: "Dragons", column: <Column key="team_dragonKills" field="team_dragonKills" header="Dragons" body={(rowData) => formatNumber(rowData.team_dragonKills)} sortable/>},
+    {label: "Barons", column: <Column key="team_baronKills" field="team_baronKills" header="Barons" body={(rowData) => formatNumber(rowData.team_baronKills)} sortable/>},
+    {label: "Turrets", column: <Column key="team_turretKills" field="team_turretKills" header="Turrets" body={(rowData) => formatNumber(rowData.team_turretKills)} sortable/>},
+    {label: "Turrets Lost", column: <Column key="turretsLost" field="turretsLost" header="Turrets Lost" body={(rowData) => formatNumber(rowData.turretsLost)} sortable/>},
+    {label: "CC", column: <Column key="timeCCingOthers" field="timeCCingOthers" header="CC" body={(rowData) => formatNumber(rowData.timeCCingOthers)} sortable/>},
+    {label: "First Blood", column: <Column key="firstBloodKill" field="firstBloodKill" header="First Blood" body={(rowData) => formatNumber(rowData.firstBloodKill, true)} sortable/>},
     {label: "Gold", column: <Column key="goldEarned" field="goldEarned" header="Gold" body={(rowData) => total_team(rowData.goldEarned, rowData.team_goldEarned, true)} sortable/>},
     {label: "CS", column: <Column key="cs" field="cs" header="CS" body={(rowData) => formatNumber(rowData.totalMinionsKilled+rowData.neutralMinionsKilled)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.totalMinionsKilled+a.neutralMinionsKilled) - (b.totalMinionsKilled+b.neutralMinionsKilled)) * order))}/>},
     {label: "VS", column: <Column key="visionScore" field="visionScore" header="VS" body={(rowData) => formatNumber(rowData.visionScore)} sortable/>},
-    {label: "Winrate", column: <Column key="win" field="win" header="Winrate" body={(rowData) => formatNumber(rowData.win, true)} sortable/>}
+    {label: "Wards", column: <Column key="wardsPlaced" field="wardsPlaced" header="Wards" body={(rowData) => formatNumber(rowData.wardsPlaced)} sortable/>},
+    {label: "Control Wards", column: <Column key="controlWardsPlaced" field="controlWardsPlaced" header="Control Wards" body={(rowData) => formatNumber(rowData.controlWardsPlaced)} sortable/>},
+    {label: "Wards Killed", column: <Column key="wardsKilled" field="wardsKilled" header="Wards Killed" body={(rowData) => formatNumber(rowData.wardsKilled)} sortable/>},
+    {label: "Skillshots Hit", column: <Column key="skillshotsHit" field="skillshotsHit" header="Skillshots Hit" body={(rowData) => formatNumber(rowData.skillshotsHit)} sortable/>},
+    {label: "Skillshots Dodged", column: <Column key="skillshotsDodged" field="skillshotsDodged" header="Skillshots Dodged" body={(rowData) => formatNumber(rowData.skillshotsDodged)} sortable/>},
+    {label: "Solo Kills", column: <Column key="soloKills" field="soloKills" header="Solo Kills" body={(rowData) => formatNumber(rowData.soloKills)} sortable/>},
+    {label: "CS@10", column: <Column key="cs_10" field="cs_10" header="CS@10" body={(rowData) => formatNumber(rowData.laneMinionsFirst10Minutes+rowData.jungleCsBefore10Minutes)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.laneMinionsFirst10Minutes+a.jungleCsBefore10Minutes) - (b.laneMinionsFirst10Minutes+b.jungleCsBefore10Minutes)) * order))}/>}, 
+    {label: "Game Duration", column: <Column key="gameDuration" field="gameDuration" header="Game Duration" body={(rowData) => formatRoundTime(rowData.gameDuration)} sortable/>},
   ]);
-  const [hiddenColumns, setHiddenColumns] = useState([]);
 
   const getWindowDimensions = () => {
 		const { innerWidth: width, innerHeight: height } = window;
@@ -132,6 +156,12 @@ function App() {
   const formatVersion = (rawVersion) => {
     let rawVersionSplit = rawVersion.split(".");
     return (rawVersionSplit[0]+"."+rawVersionSplit[1]+".1");
+  }
+
+  const formatRoundTime = (secs) => {
+    let secsRest = Math.round(secs % 60);
+    let min = (Math.round(secs) - secsRest) / 60;
+    return (min + ":" + (secsRest<10 ? "0"+secsRest : secsRest));
   }
 
   const buildCM = () => {
@@ -239,14 +269,16 @@ function App() {
       <div className='grid m-0'>
         <BreadCrumb className='col-11' style={{borderBottomRightRadius: "0", WebkitBorderTopRightRadius: "0"}} model={breadCrumbsItems} home={home}/>
         <div className='col-1 p-breadcrumb' style={{borderBottomLeftRadius: "0", WebkitBorderTopLeftRadius: "0"}}>
+          {/*
           <Button className='p-0 mr-1' onClick={() => {}} tooltip="Undo" tooltipOptions={{ position: 'bottom', mouseTrack: true, style: {width: "63px"} }}>
-            <i className="pi pi-undo" style={{ fontSize: '0.8rem', padding: '0.2rem' }} />
+            <i className="pi pi-undo" style={{ fontSize: '0.8rem', padding: '0.2rem', marginTop: '0.1rem' }} />
           </Button>
           <Button className='p-0 mr-1' onClick={() => dt.current.exportCSV(false)} tooltip="Download" tooltipOptions={{ position: 'bottom', mouseTrack: true, style: {width: "97px"} }}>
-            <i className="pi pi-file-excel" style={{ fontSize: '0.8rem', padding: '0.2rem' }} />
+            <i className="pi pi-file-excel" style={{ fontSize: '0.8rem', padding: '0.2rem', marginTop: '0.1rem' }} />
           </Button>
+          */}
           <Button className='p-0' onClick={() => setColumnsDialogVisible(true)} tooltip="Config" tooltipOptions={{ position: 'bottom', mouseTrack: true, style: {width: "71px"} }}>
-            <i className="pi pi-cog" style={{ fontSize: '0.8rem', padding: '0.2rem' }} />
+            <i className="pi pi-cog" style={{ fontSize: '0.8rem', padding: '0.2rem', marginTop: '0.1rem' }} />
           </Button>
         </div>
       </div>
