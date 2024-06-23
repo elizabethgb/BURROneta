@@ -47,7 +47,7 @@ function App() {
     {label: "Physical Damage", column: <Column key="physicalDamageDealtToChampions" field="physicalDamageDealtToChampions" header="Physical Damage" body={(rowData) => formatNumber(rowData.physicalDamageDealtToChampions)} sortable/>},
     {label: "Magic Damage", column: <Column key="magicDamageDealtToChampions" field="magicDamageDealtToChampions" header="Magic Damage" body={(rowData) => formatNumber(rowData.magicDamageDealtToChampions)} sortable/>},
     {label: "True Damage", column: <Column key="trueDamageDealtToChampions" field="trueDamageDealtToChampions" header="True Damage" body={(rowData) => formatNumber(rowData.trueDamageDealtToChampions)} sortable/>},
-    {label: "Self Mitigated Damage", column: <Column key="damageSelfMitigated" field="damageSelfMitigated" header="True Damage" body={(rowData) => formatNumber(rowData.damageSelfMitigated)} sortable/>},
+    {label: "Self Mitigated Damage", column: <Column key="damageSelfMitigated" field="damageSelfMitigated" header="Self Mitigated Damage" body={(rowData) => formatNumber(rowData.damageSelfMitigated)} sortable/>},
     {label: "Dragons", column: <Column key="team_dragonKills" field="team_dragonKills" header="Dragons" body={(rowData) => formatNumber(rowData.team_dragonKills)} sortable/>},
     {label: "Barons", column: <Column key="team_baronKills" field="team_baronKills" header="Barons" body={(rowData) => formatNumber(rowData.team_baronKills)} sortable/>},
     {label: "Turrets", column: <Column key="team_turretKills" field="team_turretKills" header="Turrets" body={(rowData) => formatNumber(rowData.team_turretKills)} sortable/>},
