@@ -1,0 +1,9 @@
+[
+
+	{ "label": "Season 14", "from": 1704812400000, "to": 1726027200000 },
+
+	{ "label": "Season 14 - Split 1", "from": 1704812400000, "to": 1715785200000 },
+
+	{ "label": "Season 14 - Split 2", "from": 1715785200000, "to": 1726027200000, "default": true }
+
+]

@@ -1,0 +1,17 @@
+[
+
+    {"key": "summoner", "label": "Summoner"},
+
+    {"key": "queue", "label": "Queue"},
+
+    {"key": "championName", "label": "Champion"},
+
+    {"key": "gameDurationCat", "label": "Duration"},
+
+    {"key": "result", "label": "Result"},
+
+    {"key": "side", "label": "Side"},
+
+    {"key": "party", "label": "Party"}
+
+]
