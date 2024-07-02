@@ -9,6 +9,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { ContextMenu } from 'primereact/contextmenu';
 import { Button } from 'primereact/button';
+import { Badge } from 'primereact/badge';
 import ColumnSelectionDialog from './components/ColumnsSelectionDialog';
 import MatchDetailsDialog from './components/MatchDetailsDialog';
 
@@ -39,7 +40,8 @@ function App() {
     {label: "Gold/min", column: <Column key="goldEarned" field="goldEarned_min" header="Gold/min" body={(rowData) => total_team(rowData.goldEarned*60/rowData.gameDuration, rowData.team_goldEarned*60/rowData.gameDuration, true)} sortable sortFunction={({data, order}) => data.sort((a,b) => (a.goldEarned/a.gameDuration-b.goldEarned/b.gameDuration)*order)}/>},
     {label: "CS/min", column: <Column key="cs_min" field="cs_min" header="CS/min" body={(rowData) => formatNumber((rowData.totalMinionsKilled+rowData.neutralMinionsKilled)*60/rowData.gameDuration)} sortable sortFunction={({data, order}) => data.sort((a, b) => (((a.totalMinionsKilled+a.neutralMinionsKilled)/a.gameDuration - (b.totalMinionsKilled+b.neutralMinionsKilled)/b.gameDuration) * order))}/>},
     {label: "VS/min", column: <Column key="visionScore_min" field="visionScore_min" header="VS/min" body={(rowData) => formatNumber(rowData.visionScore*60/rowData.gameDuration)} sortable sortFunction={({data, order}) => data.sort((a,b) => (a.visionScore/a.gameDuration-b.visionScore/b.gameDuration)*order)}/>},
-    {label: "Winrate", column: <Column key="win" field="win" header="Winrate" body={(rowData) => formatNumber(rowData.win, true)} sortable/>}
+    {label: "Winrate", column: <Column key="win" field="win" header="Winrate" body={(rowData) => formatNumber(rowData.win, true)} sortable/>},
+    {label: "Last 10", column: <Column key="last10" style={{minWidth: "115px"}} field="lastMatches" header="Last 10" body={(rowData) => buildLast10(rowData)} />}
   ]);
   const [hiddenColumns, setHiddenColumns] = useState([
     {label: "Total Damage", column: <Column key="totalDamageDealtToChampions" field="totalDamageDealtToChampions" header="Total Damage" body={(rowData) => total_team(rowData.totalDamageDealtToChampions, rowData.team_totalDamageDealtToChampions, true)} sortable/>},
@@ -259,9 +261,19 @@ function App() {
     });
     //promedios:
     Object.keys(processed).forEach((elem) => {
-      dataKeys.forEach((key) => {processed[elem][key] /= processed[elem]["games"]})
+      dataKeys.forEach((key) => {processed[elem][key] /= processed[elem]["games"]});
+      processed[elem].lastMatches = processed[elem].matchList
+                  .filter((v,i,s) => i === s.findIndex((t) => t.gameStartTimestamp === v.gameStartTimestamp))
+                  .sort((a,b) => b.gameStartTimestamp-a.gameStartTimestamp)
+                  .slice(0, 10)
+                  .reverse()
+                  .map((match) => match.win);
     });
     setCalculatedData(Object.values(processed));
+  }
+
+  const buildLast10 = (rowData) => {
+    return (<React.Fragment>{rowData.lastMatches.map((m) => <Badge className="inline-block" severity={m ? "success" : "danger"}/>)}</React.Fragment>)
   }
 
   return (
