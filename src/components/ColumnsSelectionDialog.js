@@ -2,7 +2,7 @@ import React from 'react';
 import { Dialog } from 'primereact/dialog';
 import { PickList } from 'primereact/picklist';
 
-const ColumnSelectionDialog = ({visible, setVisible, hiddenColumns, setHiddenColumns, visibleColumns, setVisibleColumns}) => { //otra forma: props y abajo al usarlo props.visible (por ej)
+const ColumnSelectionDialog = ({visible, setVisible, hiddenColumns, setHiddenColumns, visibleColumns, setVisibleColumns}) => { //option: props, and props.visible for usage (for ex)
 
     const columnChange = (event) => {
         setVisibleColumns(event.source);

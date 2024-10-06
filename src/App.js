@@ -89,7 +89,7 @@ function App() {
     fetch("data/seasons.json")
       .then((result) => result.json())
       .then((seasonsList) => {
-        seasonsList.forEach((season, pos) => {season.id=pos}); //otra opción: seasonsList = seasonsList.map((season, pos) => {return {...season, id: pos}});
+        seasonsList.forEach((season, pos) => {season.id=pos}); //option: seasonsList = seasonsList.map((season, pos) => {return {...season, id: pos}});
         setSeasons(seasonsList);
         let posDefaultSeason = 0;
         seasonsList.forEach((season) => {if (season.default) posDefaultSeason=season.id});
@@ -103,7 +103,7 @@ function App() {
                 promises.push(fetch(`data/${file}.json`)
                   .then((result) => result.json())
                   .then((processed) => {
-                    processed.forEach((elem) => dataTemp.push(elem)); //Otras opciones: dataTemp = [...dataTemp, ...processed]; o dataTemp = dataTemp.concat(processed); o dataTemp.push(...processed);
+                    processed.forEach((elem) => dataTemp.push(elem)); //options: dataTemp = [...dataTemp, ...processed]; or dataTemp = dataTemp.concat(processed); o dataTemp.push(...processed);
                   })
                 )
               });
@@ -115,7 +115,7 @@ function App() {
       .then((GBlist) => {setGroupByOptions(GBlist)});
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const select = (event, option, rowData) => { //rowData sólo viene si option es 0 (de la tabla)
+  const select = (event, option, rowData) => { //rowData only comes if option is 0 (from the table)
     setOpOption(option);
     cm.current.show(event);
     if (option === 0) setSelected(rowData[currentGroupBy.key]);
@@ -125,7 +125,7 @@ function App() {
     setMatchesDialogVisible(true); 
     setMatchesDialogData(rowData.matchList);
     let header = breadCrumbsItems[0].label; //season
-    breadCrumbsItems.slice(1,-1).forEach((elem) => {header += " - " + elem.label.replace(":","")}); //filtros (sin el :)
+    breadCrumbsItems.slice(1,-1).forEach((elem) => {header += " - " + elem.label.replace(":","")}); //filters (without the :)
     header += " - " + breadCrumbsItems[breadCrumbsItems.length-1].label.replace("By ",""); //groupBy
     header += " " + rowData[currentGroupBy.key]; //groupBy value
     setMatchesDialogHeader(header);
@@ -137,12 +137,12 @@ function App() {
     setMatchesDialogHeader("");
   }
 
-  const total_team = (num, team_num, isK) => { //devuelve texto: num y porcentaje con formato + % y () (tiene en cuenta los k)
+  const total_team = (num, team_num, isK) => { //returns text: num y porc with format + % and () (k also)
     let porc = team_num===0 ? 0 : num/team_num;
     return formatNumber(num, false, isK) + " (" + formatNumber(porc, true) + ")";
   }
 
-  const formatNumber = (data, isPorc, isK) => { //devuelve texto
+  const formatNumber = (data, isPorc, isK) => { //returns text
     let digits = 2;
     if (isPorc) data = data * 100;
     if (isK && data>=1000) {
@@ -168,16 +168,16 @@ function App() {
 
   const buildCM = () => {
     let items = [];
-    if (opOption === 2) //si es de seasons de BC
+    if (opOption === 2) //if it is from seasons of the BC
       items = seasons.map((season) => {return {label: season.label, command: () => processRawData(currentGroupBy, currentFilters, season)}})
-    else { //si es de tabla o de groupBy de BC
+    else { //if it is from the table or groupBy of the BC
       let filterKeys = currentFilters.map((filter) => filter.key);
       filterKeys.push(currentGroupBy.key);
       items = groupByOptions
         .filter((elem) => !filterKeys.includes(elem.key))
         .map((option) => {return{label:option.label, command: () => {
           let currentFilterElem = currentFilters;
-          if (opOption === 0) //si es de tabla
+          if (opOption === 0) //if it is from the table
             currentFilterElem.push({key: currentGroupBy.key, label: currentGroupBy.label, value: selected});
           processRawData({key: option.key, label: option.label}, currentFilterElem);
         }}})
@@ -185,7 +185,7 @@ function App() {
     return (<ContextMenu ref={cm} model={items}/>)
   }
 
-  const processRawData = (groupBy, filters, season, raw) => { //season viene el objeto, viene solo al cambiarlo (en los procesados comunes, no); raw sólo viene en la primera carga (por sincronismo)
+  const processRawData = (groupBy, filters, season, raw) => { //season comes the object, it comes only if it was changed (not in the common procces); raw only comes in the first load (because of synchronism)
     if (!season) season=seasons[currentSeason]; else setCurrentSeason(season.id);
     if (!raw) raw=rawData; else setRawData(raw);
     setCurrentGroupBy(groupBy);
@@ -240,9 +240,9 @@ function App() {
       "skillshotsDodged", "skillshotsHit", 
       "soloKills", 
       "laneMinionsFirst10Minutes", "jungleCsBefore10Minutes",
-      "win" //vienen en boolean -> se traduce solo
+      "win" //in boolean -> automatic translation
     ];
-    //agrupo + proceso (sumas):
+    //group + process (adding):
     let processed = {};
     rawFiltered.forEach((elem) => {
       if (elem[groupBy.key] in processed) {
@@ -259,7 +259,7 @@ function App() {
         processed[elem[groupBy.key]] = mapEach;
       }
     });
-    //promedios:
+    //averages:
     Object.keys(processed).forEach((elem) => {
       dataKeys.forEach((key) => {processed[elem][key] /= processed[elem]["games"]});
       processed[elem].lastMatches = processed[elem].matchList
@@ -296,7 +296,7 @@ function App() {
       </div>
       {buildCM()}
       <DataTable ref={dt} value={calculatedData} tableStyle={{ minWidth: '50rem' }} selectionMode="single" sortField="games" sortOrder={-1} scrollable scrollHeight={windowDimensions.height * 0.9}/*onRowClick={(event) => select(event, 0)}*/>
-        {currentGroupBy.key==="championName" ? <Column body={(rowData) => <img src={`https://ddragon.leagueoflegends.com/cdn/${rowData.gameVersion}/img/champion/${rowData.championName}.png`} alt={rowData.championName} width="32px"/>}/> : undefined /*sino: currentGroupBy.key==="championName" && <Column body={(rd) => <img src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${rd.championName}.png`} alt={rd.championName} width="48px" />*/}
+        {currentGroupBy.key==="championName" ? <Column body={(rowData) => <img src={`https://ddragon.leagueoflegends.com/cdn/${rowData.gameVersion}/img/champion/${rowData.championName}.png`} alt={rowData.championName} width="32px"/>}/> : undefined /*option: currentGroupBy.key==="championName" && <Column body={(rd) => <img src={`https://ddragon.leagueoflegends.com/cdn/14.10.1/img/champion/${rd.championName}.png`} alt={rd.championName} width="48px" />*/}
         <Column field={currentGroupBy.key} header={currentGroupBy.label} sortable/>
         {visibleColumns.map((c) => c.column)}
         <Column style={{minWidth: "110px"}} body={(rowData) => <div className="inline">
@@ -331,16 +331,16 @@ export default App;
   rawData:
   [{A1}, {A2}, ..., {B1}, {B2}, ...]
 
-  => filtra
+  => filters
 
-  processed: (sum o el agrupado que sea)
+  processed: (sum or any groupBy)
   {
     sum1: {A},
     sum2: {B},
     ...
   }
 
-  para la tabla (calculatedData):
+  for the table (calculatedData):
     [{A}, {B}, ...]
 
   currentFilters:
@@ -353,15 +353,15 @@ export default App;
       label: groupBy1Label}
 
   seasons:
-    [{"label": season1Label, "from": season1From, "to": season1To, "default": true}, ...] //default uno sólo, en el useEffect se agrega un id incremental de la posición
+    [{"label": season1Label, "from": season1From, "to": season1To, "default": true}, ...] //just one default, in the useEffect an incremental id of the position is added
   
-  currentSeason: índice de seasons
+  currentSeason: seasons index
 
   opOption:
-    0 común de tabla, 1 de groupBy en BC, 2 de season en BC 
+    0 normal of the table, 1 from groupBy of BC, 2 from season of BC 
 
   */
 
   //TODO undo
-  //TODO csv (ver)
-  //TODO tooltip (ver)
+  //TODO csv ()
+  //TODO tooltip ()
